@@ -1,6 +1,6 @@
 # This .gitignore file should be placed at the root of your Unity project directory
 #
-# Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
+# Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
 /[Ll]ibrary/
 /[Tt]emp/
@@ -14,8 +14,8 @@
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
 
-# Recordings can get excessive in size
-/[Rr]ecordings/
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
@@ -59,7 +59,6 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
-*.app
 
 # Crashlytics generated file
 crashlytics-build.properties
@@ -70,3 +69,35 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+user.keystore
+user.keystore.asc
+user.keystore.base64
+Assets/Feel/NiceVibrations/OlderVersions/v3.9/NiceVibrations-v-3-9-0.unitypackage.meta
+Assets/Feel/NiceVibrations/OlderVersions/v2.0.1/NiceVibrations-v-2-0-1.unitypackage.meta
+Assets/Feel/NiceVibrations/OlderVersions/v1.7/NiceVibrations-v-1-7.unitypackage.meta
+Assets/AmplifyShaderEditor/Plugins/EditorResources/Templates/USRPTemplates.unitypackage.meta
+Assets/AmplifyShaderEditor/Plugins/EditorResources/Templates/PPStackTemplates.unitypackage.meta
+Assets/AmplifyShaderEditor/Plugins/EditorResources/Templates/LWSRPTemplates.unitypackage.meta
+Assets/AmplifyShaderEditor/Plugins/EditorResources/Templates/HDSRPTemplates.unitypackage.meta
+Assets/AmplifyShaderEditor/Plugins/EditorResources/Templates/CustomRTTemplates.unitypackage.meta
+Assets/MobileBloom.meta
+Assets/MobileBloom/URP_Bloom.unitypackage.meta
+Assets/AmplifyOcclusion/Packages/PostProcessingSRP_4.3.0.unitypackage.meta
+Assets/AmplifyOcclusion/Packages/PostProcessingSRP_3.0.0.unitypackage.meta
+Assets/AmplifyOcclusion/Packages/PostProcessingLightweightRP_5.7.2.unitypackage.meta
+
+/Screenshots
+Assets/3rd Party/Feel/NiceVibrations/OlderVersions/v2.0.1/NiceVibrations-v-2-0-1.unitypackage.meta
+Assets/3rd Party/Feel/NiceVibrations/OlderVersions/v3.9/NiceVibrations-v-3-9-0.unitypackage.meta
+Assets/3rd Party/Feel/NiceVibrations/OlderVersions/v1.7/NiceVibrations-v-1-7.unitypackage.meta
+Assets/3rd Party/AmplifyOcclusion/Packages/PostProcessingLightweightRP_5.7.2.unitypackage.meta
+Assets/3rd Party/AmplifyOcclusion/Packages/PostProcessingSRP_3.0.0.unitypackage.meta
+Assets/3rd Party/AmplifyOcclusion/Packages/PostProcessingSRP_4.3.0.unitypackage.meta
+Assets/3rd Party/SeedMesh/Jungle-Tropical Vegetation/Shader_graph/URP_Shaders.unitypackage.meta
+
+Assets/3rd Party/NatureManufacture Assets/River Auto Material/HD and URP Support Packs/HD RP 12.1  Unity 2021.3 River Auto Material 2019.unitypackage.meta
+Assets/3rd Party/NatureManufacture Assets/River Auto Material/HD and URP Support Packs/URP 12.1  Unity 2021.3 River Auto Material 2019.unitypackage.meta
+Assets/3rd Party/NatureManufacture Assets/River Auto Material/Third Party Assets Support Files/Aura 2 support.unitypackage.meta
+Assets/3rd Party/NatureManufacture Assets/River Auto Material/Third Party Assets Support Files/Enviro Weather support.unitypackage.meta
+Assets/3rd Party/NatureManufacture Assets/River Auto Material/Third Party Assets Support Files/OverCloud support.unitypackage.meta
+Assets/3rd Party/NatureManufacture Assets/Spline System/Scripts/LakePolygon/Triangulation/TriangleDotNet/Triangle/Triangle.csproj.meta
