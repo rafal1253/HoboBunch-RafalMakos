@@ -7,6 +7,6 @@ public class WarehouseBuilding : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EventManager.InvokeOnNewWarehouseBuilding(this);
+        EventManager.InvokeOnNewWarehouseBuilding(gameObject);
     }
 }

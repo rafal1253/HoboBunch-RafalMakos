@@ -18,7 +18,7 @@ public class ExtractionBuilding : MonoBehaviour
     void Start()
     {
         timeProgress = 0f;
-        EventManager.InvokeOnNewExtractionBuilding(this);
+        EventManager.InvokeOnNewExtractionBuilding(gameObject);
 
     }
 

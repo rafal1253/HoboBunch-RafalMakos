@@ -10,16 +10,17 @@ public class Human : MonoBehaviour
     enum State { Idle, Walk, Carry}
     State _state;
 
-    [SerializeField] Transform _target;
+    [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
+    [SerializeField] bool _busy = false;
 
     NavMeshAgent _agent;
     Animator _animator;
 
     // Lists of buildings that can be visited
-    [SerializeField] List<ExtractionBuilding> _extractBuildings;
-    [SerializeField] List<ProductionBuilding> _productBuildings;
-    [SerializeField] List<WarehouseBuilding> _warehouseBuildings;
+    [SerializeField] List<GameObject> _extractBuildings = new List<GameObject>();
+    [SerializeField] List<GameObject> _productBuildings;
+    [SerializeField] List<GameObject> _warehouseBuildings;
 
     private void OnEnable()
     {
@@ -43,18 +44,33 @@ public class Human : MonoBehaviour
     private void InitHuman()
     {
         _state = State.Idle;
+        _busy = false;
 
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
 
-        _extractBuildings = FindObjectsOfType<ExtractionBuilding>().ToList();
-        _productBuildings = FindObjectsOfType<ProductionBuilding>().ToList();
-        _warehouseBuildings = FindObjectsOfType<WarehouseBuilding>().ToList();
+        SaveAsGameobjectsList(FindObjectsOfType<ExtractionBuilding>(), out _extractBuildings);
+        SaveAsGameobjectsList(FindObjectsOfType<ProductionBuilding>(), out _productBuildings);
+        SaveAsGameobjectsList(FindObjectsOfType<WarehouseBuilding>(), out _warehouseBuildings);
     }
+
+    void SaveAsGameobjectsList<T>(T[] array, out List<GameObject> buildingList)
+    {
+        buildingList = new List<GameObject>();
+        foreach (T item in array)
+        {
+            buildingList.Add(item as GameObject);
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (!_busy)
+            FindJob();
+
+        /*
         State state = _state;
         if (_target == null)
             _state = State.Idle;
@@ -63,7 +79,7 @@ public class Human : MonoBehaviour
             if (_resourceSO == null)
             {
                 _state = State.Walk;
-                SetTargetExtraction();
+                //SetTargetExtraction();
             }
             else
             {
@@ -76,50 +92,50 @@ public class Human : MonoBehaviour
 
         }
         ChangeAnimation(state);
-
-        MoveToTarget();
+        */
 
     }
 
-    void SetTargetExtraction()
+    void FindJob()
     {
-        _target = FindNearestBuildingOfType(typeof(ExtractionBuilding));
+        _target = FindNearestExtraction(_extractBuildings);
+        _busy = _target != null;
+        MoveToTarget();
     }
     void SetTargetProduction()
     {
-        _target = FindNearestBuildingOfType(typeof(ProductionBuilding));
+        //_target = FindNearestBuildingOfType(_productBuildings);
     }
     void SetTargetWarehouse()
     {
-        _target = FindNearestBuildingOfType(typeof(WarehouseBuilding));
+        //_target = FindNearestBuildingOfType(_warehouseBuildings);
     }
 
 
-    private Transform FindNearestBuildingOfType(Type buildingType)
+    private GameObject FindNearestExtraction(List<GameObject> buildingList)
     {
-        Transform nearestBuilding = null;
+        GameObject nearestBuilding = null;
         float shortestDistance = Mathf.Infinity;
-        dynamic[] targetBuildings = FindObjectsOfType(buildingType);
 
-        foreach (dynamic building in targetBuildings)
+        foreach (GameObject building in buildingList)
         {
-            Transform buildingTransform = building as Transform;
             float distance = Vector3.Distance(transform.position, building.transform.position);
 
-            if (distance < shortestDistance)
+            if (distance < shortestDistance && building.GetComponent<GameResourcesList>().resources[0].amount > 0)
             {
                 shortestDistance = distance;
-                nearestBuilding = buildingTransform;
+                nearestBuilding = building.gameObject;
             }
         }
-
         return nearestBuilding;
     }
+    
+
 
     void MoveToTarget()
     {
         if (_target != null)
-            _agent.SetDestination(_target.position);
+            _agent.SetDestination(_target.transform.position);
         //transform.LookAt(_target.position);
     }
 
@@ -142,15 +158,15 @@ public class Human : MonoBehaviour
             }
         }
     }
-    void UpdateExtractionBuildings(ExtractionBuilding building)
+    void UpdateExtractionBuildings(GameObject building)
     {
         _extractBuildings.Add(building);
     }
-    void UpdateProductionBuildings(ProductionBuilding building)
+    void UpdateProductionBuildings(GameObject building)
     {
         _productBuildings.Add(building);
     }
-    void UpdateWarehouseBuildings(WarehouseBuilding building)
+    void UpdateWarehouseBuildings(GameObject building)
     {
         _warehouseBuildings.Add(building);
     }
