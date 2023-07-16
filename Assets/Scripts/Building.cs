@@ -5,6 +5,8 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     public Canvas buildingCanvas;
+    public Transform EntryPlaceTransform;
+
     void Update()
     {
         RaycastHit hit;

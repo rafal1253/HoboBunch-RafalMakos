@@ -18,6 +18,8 @@ public class ExtractionBuilding : MonoBehaviour
     void Start()
     {
         timeProgress = 0f;
+        EventManager.InvokeOnNewExtractionBuilding(this);
+
     }
 
     // Update is called once per frame

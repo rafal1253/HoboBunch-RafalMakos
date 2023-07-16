@@ -20,6 +20,7 @@ public class ProductionBuilding : MonoBehaviour
     void Start()
     {
         timeProgress = 0f;
+        EventManager.InvokeOnNewProductionBuilding(this);
     }
 
     // Update is called once per frame
