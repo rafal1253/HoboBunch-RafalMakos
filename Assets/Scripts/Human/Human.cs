@@ -7,8 +7,8 @@ using System.Linq;
 
 public class Human : MonoBehaviour
 {
-    enum State { Idle, Walk, Carry}
-    State _state;
+    enum States { Idle, Walk, Carry}
+    States _state;
 
     [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
@@ -43,7 +43,8 @@ public class Human : MonoBehaviour
 
     private void InitHuman()
     {
-        _state = State.Idle;
+        _state = States.Idle;
+        ChangeAnimation(_state);
         _busy = false;
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -72,18 +73,34 @@ public class Human : MonoBehaviour
 
 
         // take resource when reach destination and eq is empty
-        if (_target != null && _resourceSO == null && !_navMeshAgent.pathPending)
+        if (_target != null && !_navMeshAgent.pathPending)
         {
             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
             {
                 if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
                 {
                     GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
-                    GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
-                    if (targetResources.TryUse(resourceNeeded, 1))
+                    if (_resourceSO == null)
                     {
-                        _resourceSO = resourceNeeded;
-                        _state = State.Carry;
+                        GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
+                        if (targetResources.TryUse(resourceNeeded, 1))
+                        {
+                            _resourceSO = resourceNeeded;
+                            _state = States.Carry;
+                            ChangeAnimation(_state);
+                            if (_resourceSO.resourceName == "Wood")
+                                SetTargetProduction();
+                            else
+                                SetTargetWarehouse();
+                        }
+                        else
+                            _busy = false;
+                    }
+                    else
+                    {
+                        targetResources.Add(_resourceSO, 1);
+                        _resourceSO = null;
+                        _state = States.Idle;
                     }
                 }
             }
@@ -122,15 +139,19 @@ public class Human : MonoBehaviour
     {
         _target = FindNearestBuildingOfType(_extractBuildings);
         _busy = _target != null;
+        _state = States.Walk;
+        ChangeAnimation(_state);
         MoveToTarget();
     }
     void SetTargetProduction()
     {
         _target = FindNearestBuildingOfType(_productBuildings);
+        MoveToTarget();
     }
     void SetTargetWarehouse()
     {
         _target = FindNearestBuildingOfType(_warehouseBuildings);
+        MoveToTarget();
     }
 
 
@@ -143,7 +164,7 @@ public class Human : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, building.transform.position);
 
-            if (distance < shortestDistance && building.GetComponent<GameResourcesList>().resources[0].amount > 0)
+            if (distance < shortestDistance /*&& building.GetComponent<GameResourcesList>().resources[0].amount > 0*/)
             {
                 shortestDistance = distance;
                 nearestBuilding = building.gameObject;
@@ -162,17 +183,17 @@ public class Human : MonoBehaviour
     }
 
 
-    void ChangeAnimation(State state)
+    void ChangeAnimation(States state)
     {
         switch(state)
         {
-            case State.Idle:
+            case States.Idle:
                 _animator.SetTrigger("Idle");
                 break;
-            case State.Walk:
+            case States.Walk:
                 _animator.SetTrigger("Walk");
                 break;
-            case State.Carry:
+            case States.Carry:
                 _animator.SetTrigger("Carry");
                 break;
         }
