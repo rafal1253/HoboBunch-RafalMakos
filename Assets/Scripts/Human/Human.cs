@@ -14,13 +14,13 @@ public class Human : MonoBehaviour
     [SerializeField] GameResourceSO _resourceSO;
     [SerializeField] bool _busy = false;
 
-    NavMeshAgent _agent;
+    NavMeshAgent _navMeshAgent;
     Animator _animator;
 
     // Lists of buildings that can be visited
-    [SerializeField] List<GameObject> _extractBuildings = new List<GameObject>();
-    [SerializeField] List<GameObject> _productBuildings;
-    [SerializeField] List<GameObject> _warehouseBuildings;
+    List<GameObject> _extractBuildings;
+    List<GameObject> _productBuildings;
+    List<GameObject> _warehouseBuildings;
 
     private void OnEnable()
     {
@@ -46,7 +46,7 @@ public class Human : MonoBehaviour
         _state = State.Idle;
         _busy = false;
 
-        _agent = GetComponent<NavMeshAgent>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
 
         SaveAsGameobjectsList(FindObjectsOfType<ExtractionBuilding>(), out _extractBuildings);
@@ -68,7 +68,29 @@ public class Human : MonoBehaviour
     void Update()
     {
         if (!_busy)
-            FindJob();
+            SetTargetExtraction();
+
+
+        // take resource when reach destination and eq is empty
+        if (_target != null && _resourceSO == null && !_navMeshAgent.pathPending)
+        {
+            if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
+            {
+                if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
+                {
+                    GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
+                    GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
+                    if (targetResources.TryUse(resourceNeeded, 1))
+                    {
+                        _resourceSO = resourceNeeded;
+                        _state = State.Carry;
+                    }
+                }
+            }
+        }
+
+        
+
 
         /*
         State state = _state;
@@ -96,23 +118,23 @@ public class Human : MonoBehaviour
 
     }
 
-    void FindJob()
+    void SetTargetExtraction()
     {
-        _target = FindNearestExtraction(_extractBuildings);
+        _target = FindNearestBuildingOfType(_extractBuildings);
         _busy = _target != null;
         MoveToTarget();
     }
     void SetTargetProduction()
     {
-        //_target = FindNearestBuildingOfType(_productBuildings);
+        _target = FindNearestBuildingOfType(_productBuildings);
     }
     void SetTargetWarehouse()
     {
-        //_target = FindNearestBuildingOfType(_warehouseBuildings);
+        _target = FindNearestBuildingOfType(_warehouseBuildings);
     }
 
 
-    private GameObject FindNearestExtraction(List<GameObject> buildingList)
+    private GameObject FindNearestBuildingOfType(List<GameObject> buildingList)
     {
         GameObject nearestBuilding = null;
         float shortestDistance = Mathf.Infinity;
@@ -135,27 +157,24 @@ public class Human : MonoBehaviour
     void MoveToTarget()
     {
         if (_target != null)
-            _agent.SetDestination(_target.transform.position);
+            _navMeshAgent.SetDestination(_target.transform.position);
         //transform.LookAt(_target.position);
     }
 
 
     void ChangeAnimation(State state)
     {
-        if (_state != state)
+        switch(state)
         {
-            switch(state)
-            {
-                case State.Idle:
-                    _animator.SetTrigger("Idle");
-                    break;
-                case State.Walk:
-                    _animator.SetTrigger("Walk");
-                    break;
-                case State.Carry:
-                    _animator.SetTrigger("Carry");
-                    break;
-            }
+            case State.Idle:
+                _animator.SetTrigger("Idle");
+                break;
+            case State.Walk:
+                _animator.SetTrigger("Walk");
+                break;
+            case State.Carry:
+                _animator.SetTrigger("Carry");
+                break;
         }
     }
     void UpdateExtractionBuildings(GameObject building)
