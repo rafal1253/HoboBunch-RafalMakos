@@ -87,7 +87,7 @@ public class Human : MonoBehaviour
             Debug.Log("targetowanie");
             _targetingInProcess = false;
         }
-        return;
+        
         // take resource when reach destination and eq is empty
         if (_target != null && !_navMeshAgent.pathPending)
         {

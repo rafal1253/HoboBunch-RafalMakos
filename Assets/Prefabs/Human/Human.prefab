@@ -85,11 +85,11 @@ NavMeshAgent:
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
-  m_AutoRepath: 1
+  m_AutoRepath: 0
   m_Height: 0.53
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!114 &944467394279089837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +105,7 @@ MonoBehaviour:
   _state: 0
   _target: {fileID: 0}
   _resourceSO: {fileID: 0}
-  _busy: 0
+  _targetingInProcess: 0
 --- !u!114 &7524413189285177923
 MonoBehaviour:
   m_ObjectHideFlags: 0
