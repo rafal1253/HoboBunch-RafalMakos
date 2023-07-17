@@ -8,7 +8,7 @@ using System.Linq;
 public class Human : MonoBehaviour
 {
     enum States { Idle, Walk, Carry}
-    States _state;
+    [SerializeField] States _state;
 
     [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
@@ -36,7 +36,7 @@ public class Human : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         InitHuman();
     }
@@ -44,7 +44,6 @@ public class Human : MonoBehaviour
     private void InitHuman()
     {
         _state = States.Idle;
-        ChangeAnimation(_state);
         _busy = false;
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -55,12 +54,13 @@ public class Human : MonoBehaviour
         SaveAsGameobjectsList(FindObjectsOfType<WarehouseBuilding>(), out _warehouseBuildings);
     }
 
-    void SaveAsGameobjectsList<T>(T[] array, out List<GameObject> buildingList)
+    void SaveAsGameobjectsList<T>(T[] array, out List<GameObject> buildingList) where T : Component
     {
         buildingList = new List<GameObject>();
         foreach (T item in array)
         {
-            buildingList.Add(item as GameObject);
+            Debug.Log(item.gameObject);
+            buildingList.Add(item.gameObject);
         }
     }
 
@@ -68,7 +68,7 @@ public class Human : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_busy)
+        if (!_busy && _resourceSO ==  null)
             SetTargetExtraction();
 
 
@@ -87,7 +87,6 @@ public class Human : MonoBehaviour
                         {
                             _resourceSO = resourceNeeded;
                             _state = States.Carry;
-                            ChangeAnimation(_state);
                             if (_resourceSO.resourceName == "Wood")
                                 SetTargetProduction();
                             else
@@ -140,7 +139,6 @@ public class Human : MonoBehaviour
         _target = FindNearestBuildingOfType(_extractBuildings);
         _busy = _target != null;
         _state = States.Walk;
-        ChangeAnimation(_state);
         MoveToTarget();
     }
     void SetTargetProduction()
@@ -151,6 +149,7 @@ public class Human : MonoBehaviour
     void SetTargetWarehouse()
     {
         _target = FindNearestBuildingOfType(_warehouseBuildings);
+        _busy = false;
         MoveToTarget();
     }
 
@@ -192,9 +191,11 @@ public class Human : MonoBehaviour
                 break;
             case States.Walk:
                 _animator.SetTrigger("Walk");
+                _navMeshAgent.speed = 0.5f;
                 break;
             case States.Carry:
                 _animator.SetTrigger("Carry");
+                _navMeshAgent.speed = 0.3f;
                 break;
         }
     }
