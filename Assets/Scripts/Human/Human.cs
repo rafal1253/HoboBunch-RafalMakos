@@ -12,7 +12,7 @@ public class Human : MonoBehaviour
 
     [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
-    [SerializeField] bool _busy = false;
+    [SerializeField] bool _targetingInProcess = false;
 
     NavMeshAgent _navMeshAgent;
     Animator _animator;
@@ -44,7 +44,6 @@ public class Human : MonoBehaviour
     private void InitHuman()
     {
         _state = States.Idle;
-        _busy = false;
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
@@ -59,7 +58,6 @@ public class Human : MonoBehaviour
         buildingList = new List<GameObject>();
         foreach (T item in array)
         {
-            Debug.Log(item.gameObject);
             buildingList.Add(item.gameObject);
         }
     }
@@ -68,13 +66,32 @@ public class Human : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_busy && _resourceSO ==  null)
-            SetTargetExtraction();
-
-
+        // set target
+        if (_target == null && !_targetingInProcess)
+        {
+            _targetingInProcess = true;
+            if (_resourceSO == null)
+            {
+                if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0 && _productBuildings.Where(x => x.GetComponent<GameResourcesList>().resources.Last().amount > 0).Count() > 0)
+                    SetTargetProduction();
+                else if (_productBuildings.Count > 0 && _extractBuildings.Count > 0)
+                    SetTargetExtraction();
+            }
+            else
+            {
+                if (_resourceSO.resourceName == "Wood")
+                    SetTargetProduction();
+                else
+                    SetTargetWarehouse();
+            }
+            Debug.Log("targetowanie");
+            _targetingInProcess = false;
+        }
+        return;
         // take resource when reach destination and eq is empty
         if (_target != null && !_navMeshAgent.pathPending)
         {
+            Debug.Log("loop");
             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
             {
                 if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
@@ -86,14 +103,7 @@ public class Human : MonoBehaviour
                         if (targetResources.TryUse(resourceNeeded, 1))
                         {
                             _resourceSO = resourceNeeded;
-                            _state = States.Carry;
-                            if (_resourceSO.resourceName == "Wood")
-                                SetTargetProduction();
-                            else
-                                SetTargetWarehouse();
                         }
-                        else
-                            _busy = false;
                     }
                     else
                     {
@@ -101,43 +111,15 @@ public class Human : MonoBehaviour
                         _resourceSO = null;
                         _state = States.Idle;
                     }
+                    _target = null;
                 }
             }
         }
-
-        
-
-
-        /*
-        State state = _state;
-        if (_target == null)
-            _state = State.Idle;
-        else
-        {
-            if (_resourceSO == null)
-            {
-                _state = State.Walk;
-                //SetTargetExtraction();
-            }
-            else
-            {
-                _state = State.Carry;
-                if (_resourceSO.name == "Wood")
-                    SetTargetProduction();
-                else if (_resourceSO.name == "Chairs")
-                    SetTargetWarehouse();
-            }
-
-        }
-        ChangeAnimation(state);
-        */
-
     }
 
     void SetTargetExtraction()
     {
         _target = FindNearestBuildingOfType(_extractBuildings);
-        _busy = _target != null;
         _state = States.Walk;
         MoveToTarget();
     }
@@ -149,7 +131,6 @@ public class Human : MonoBehaviour
     void SetTargetWarehouse()
     {
         _target = FindNearestBuildingOfType(_warehouseBuildings);
-        _busy = false;
         MoveToTarget();
     }
 
