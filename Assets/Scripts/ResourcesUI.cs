@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour
+public class ResourcesUI : MonoBehaviour
 {
     public Canvas buildingCanvas;
-    public GameObject EntryPlace;
 
     void Update()
     {

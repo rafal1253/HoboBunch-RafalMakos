@@ -84,7 +84,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingCanvas: {fileID: 8052306705087865600}
-  EntryPlace: {fileID: 6670667974594656254}
 --- !u!114 &4744103896725887065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c192f43fb56bb14eb437d2e58ec8b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EntryPlace: {fileID: 6670667974594656254}
   timeToExtract: 5
   resourceSO: {fileID: 11400000, guid: 795efae3f160520408a9f448e352f7e7, type: 2}
   resourcesList: {fileID: 4744103896725887065}

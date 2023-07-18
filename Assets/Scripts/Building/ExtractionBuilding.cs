@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExtractionBuilding : MonoBehaviour
+public class ExtractionBuilding : Building
 {
     public float timeToExtract = 5f;
 

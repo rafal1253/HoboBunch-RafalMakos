@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingCanvas: {fileID: 8012430477017447792}
-  EntryPlace: {fileID: 2252072074671356612}
 --- !u!65 &4180698505486058412
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -183,6 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce686def53d4a344cbfb9c3b166889f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EntryPlace: {fileID: 2252072074671356612}
 --- !u!1001 &8304633197981728387
 PrefabInstance:
   m_ObjectHideFlags: 0

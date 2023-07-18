@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProductionBuilding : MonoBehaviour
+public class ProductionBuilding : Building
 {
     public int inputAmountRequired = 2;
     public GameResourceSO inputResourceSO;

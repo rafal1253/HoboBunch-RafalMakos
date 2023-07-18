@@ -84,7 +84,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingCanvas: {fileID: 4587874233119197532}
-  EntryPlace: {fileID: 7668251884061284212}
 --- !u!114 &8951309828733733232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02c3923b845e69a45bdfb82f06495f2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EntryPlace: {fileID: 7668251884061284212}
   inputAmountRequired: 2
   inputResourceSO: {fileID: 11400000, guid: 795efae3f160520408a9f448e352f7e7, type: 2}
   outputResourceSO: {fileID: 11400000, guid: 0c3e8e98b5cb351459d436f738749146, type: 2}
