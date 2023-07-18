@@ -8,11 +8,12 @@ using System.Linq;
 public class Human : MonoBehaviour
 {
     enum States { Idle, Walk, Carry}
-    [SerializeField] States _state;
+    States _state;
+
 
     [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
-    [SerializeField] bool _targetingInProcess = false;
+    bool _targetingInProcess = false;
 
     NavMeshAgent _navMeshAgent;
     Animator _animator;
@@ -69,29 +70,33 @@ public class Human : MonoBehaviour
         // set target
         if (_target == null && !_targetingInProcess)
         {
+            _state = States.Idle;
             _targetingInProcess = true;
             if (_resourceSO == null)
             {
-                if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0 && _productBuildings.Where(x => x.GetComponent<GameResourcesList>().resources.Last().amount > 0).Count() > 0)
+                _state = States.Walk;
+
+                if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0)
                     SetTargetProduction();
                 else if (_productBuildings.Count > 0 && _extractBuildings.Count > 0)
                     SetTargetExtraction();
             }
             else
             {
+                _state = States.Carry;
+
                 if (_resourceSO.resourceName == "Wood")
                     SetTargetProduction();
                 else
                     SetTargetWarehouse();
             }
-            Debug.Log("targetowanie");
             _targetingInProcess = false;
+            ChangeAnimation();
         }
         
         // take resource when reach destination and eq is empty
         if (_target != null && !_navMeshAgent.pathPending)
         {
-            Debug.Log("loop");
             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
             {
                 if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
@@ -109,7 +114,6 @@ public class Human : MonoBehaviour
                     {
                         targetResources.Add(_resourceSO, 1);
                         _resourceSO = null;
-                        _state = States.Idle;
                     }
                     _target = null;
                 }
@@ -120,7 +124,6 @@ public class Human : MonoBehaviour
     void SetTargetExtraction()
     {
         _target = FindNearestBuildingOfType(_extractBuildings);
-        _state = States.Walk;
         MoveToTarget();
     }
     void SetTargetProduction()
@@ -144,7 +147,10 @@ public class Human : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, building.transform.position);
 
-            if (distance < shortestDistance /*&& building.GetComponent<GameResourcesList>().resources[0].amount > 0*/)
+            //if (_resourceSO == null && (building.GetComponent<GameResourcesList>().resources.Last().amount <= 0))
+            //    continue;
+
+            if (distance < shortestDistance)
             {
                 shortestDistance = distance;
                 nearestBuilding = building.gameObject;
@@ -163,19 +169,20 @@ public class Human : MonoBehaviour
     }
 
 
-    void ChangeAnimation(States state)
+    void ChangeAnimation()
     {
-        switch(state)
+        _animator.SetBool("Walk", false);
+        _animator.SetBool("Carry", false);
+        switch (_state)
         {
             case States.Idle:
-                _animator.SetTrigger("Idle");
                 break;
             case States.Walk:
-                _animator.SetTrigger("Walk");
+                _animator.SetBool("Walk", true);
                 _navMeshAgent.speed = 0.5f;
                 break;
             case States.Carry:
-                _animator.SetTrigger("Carry");
+                _animator.SetBool("Carry", true);
                 _navMeshAgent.speed = 0.3f;
                 break;
         }
