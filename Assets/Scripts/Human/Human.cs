@@ -10,9 +10,11 @@ public class Human : MonoBehaviour
     enum States { Idle, Walk, Carry}
     States _state;
 
+    [SerializeField] GameResourcesList _resourcesList;
     [SerializeField] GameObject _crate;
-    [SerializeField] GameObject _target;
-    [SerializeField] GameResourceSO _resourceSO;
+
+    GameObject _target;
+    GameResourceSO _resourceSO;
     bool _targetingInProcess = false;
 
     NavMeshAgent _navMeshAgent;
@@ -106,12 +108,16 @@ public class Human : MonoBehaviour
                     if (targetResources.TryUse(resourceNeeded, 1))
                     {
                         _resourceSO = resourceNeeded;
+                        _resourcesList.Add(resourceNeeded, 1);
                     }
                 }
                 else
                 {
-                    targetResources.Add(_resourceSO, 1);
-                    _resourceSO = null;
+                    if (_resourcesList.TryUse(_resourceSO, 1))
+                    {
+                        targetResources.Add(_resourceSO, 1);
+                        _resourceSO = null; 
+                    }
                 }
                 _target = null;                
             }
