@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingCanvas: {fileID: 4587874233119197532}
+  _showOnClick: 0
 --- !u!114 &8951309828733733232
 MonoBehaviour:
   m_ObjectHideFlags: 0
