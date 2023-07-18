@@ -77,18 +77,18 @@ public class Human : MonoBehaviour
                 _state = States.Walk;
 
                 if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0)
-                    SetTargetProduction();
+                    SetTargetToNearest(_productBuildings);
                 else if (_productBuildings.Count > 0 && _extractBuildings.Count > 0)
-                    SetTargetExtraction();
+                    SetTargetToNearest(_extractBuildings);
             }
             else
             {
                 _state = States.Carry;
 
                 if (_resourceSO.resourceName == "Wood")
-                    SetTargetProduction();
+                    SetTargetToNearest(_productBuildings, false);
                 else
-                    SetTargetWarehouse();
+                    SetTargetToNearest(_warehouseBuildings, false);
             }
             _targetingInProcess = false;
             ChangeAnimation();
@@ -121,24 +121,14 @@ public class Human : MonoBehaviour
         }
     }
 
-    void SetTargetExtraction()
+    void SetTargetToNearest(List<GameObject> buildingList, bool takingItem = true)
     {
-        _target = FindNearestBuildingOfType(_extractBuildings);
-        MoveToTarget();
-    }
-    void SetTargetProduction()
-    {
-        _target = FindNearestBuildingOfType(_productBuildings);
-        MoveToTarget();
-    }
-    void SetTargetWarehouse()
-    {
-        _target = FindNearestBuildingOfType(_warehouseBuildings);
+        _target = FindNearestBuildingOfType(buildingList, takingItem);
         MoveToTarget();
     }
 
 
-    private GameObject FindNearestBuildingOfType(List<GameObject> buildingList)
+    private GameObject FindNearestBuildingOfType(List<GameObject> buildingList, bool takingItem = true)
     {
         GameObject nearestBuilding = null;
         float shortestDistance = Mathf.Infinity;
@@ -147,8 +137,8 @@ public class Human : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, building.transform.position);
 
-            //if (_resourceSO == null && (building.GetComponent<GameResourcesList>().resources.Last().amount <= 0))
-            //    continue;
+            if (takingItem && (building.GetComponent<GameResourcesList>().resources.Last().amount <= 0))
+                continue;
 
             if (distance < shortestDistance)
             {
