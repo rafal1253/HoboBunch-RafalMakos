@@ -97,26 +97,23 @@ public class Human : MonoBehaviour
         // take resource when reach destination and eq is empty
         if (_target != null && !_navMeshAgent.pathPending)
         {
-            if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
-            {
-                if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
+            if (Vector3.Distance(transform.position, _navMeshAgent.destination) < 0.2f)
+            {                
+                GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
+                if (_resourceSO == null)
                 {
-                    GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
-                    if (_resourceSO == null)
+                    GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
+                    if (targetResources.TryUse(resourceNeeded, 1))
                     {
-                        GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
-                        if (targetResources.TryUse(resourceNeeded, 1))
-                        {
-                            _resourceSO = resourceNeeded;
-                        }
+                        _resourceSO = resourceNeeded;
                     }
-                    else
-                    {
-                        targetResources.Add(_resourceSO, 1);
-                        _resourceSO = null;
-                    }
-                    _target = null;
                 }
+                else
+                {
+                    targetResources.Add(_resourceSO, 1);
+                    _resourceSO = null;
+                }
+                _target = null;                
             }
         }
     }
