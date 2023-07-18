@@ -69,7 +69,41 @@ public class Human : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // set target
+        StartCoroutine(FindNewJob());
+        DispenseResource();
+    }
+
+    private void DispenseResource()
+    {
+        if (_target != null && !_navMeshAgent.pathPending)
+        {
+            if (Vector3.Distance(transform.position, _navMeshAgent.destination) < 0.2f)
+            {
+                GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
+                if (_resourceSO == null)
+                {
+                    GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
+                    if (targetResources.TryUse(resourceNeeded, 1))
+                    {
+                        _resourceSO = resourceNeeded;
+                        _resourcesList.Add(resourceNeeded, 1);
+                    }
+                }
+                else
+                {
+                    if (_resourcesList.TryUse(_resourceSO, 1))
+                    {
+                        targetResources.Add(_resourceSO, 1);
+                        _resourceSO = null;
+                    }
+                }
+                _target = null;
+            }
+        }
+    }
+
+    IEnumerator FindNewJob()
+    {
         if (_target == null && !_targetingInProcess)
         {
             _state = States.Idle;
@@ -92,35 +126,10 @@ public class Human : MonoBehaviour
                 else
                     SetTargetToNearest(_warehouseBuildings, false);
             }
-            _targetingInProcess = false;
             ChangeAnimation();
-        }
-        
-        // take resource when reach destination and eq is empty
-        if (_target != null && !_navMeshAgent.pathPending)
-        {
-            if (Vector3.Distance(transform.position, _navMeshAgent.destination) < 0.2f)
-            {                
-                GameResourcesList targetResources = _target.GetComponent<GameResourcesList>();
-                if (_resourceSO == null)
-                {
-                    GameResourceSO resourceNeeded = targetResources.resourceSOs.Last();
-                    if (targetResources.TryUse(resourceNeeded, 1))
-                    {
-                        _resourceSO = resourceNeeded;
-                        _resourcesList.Add(resourceNeeded, 1);
-                    }
-                }
-                else
-                {
-                    if (_resourcesList.TryUse(_resourceSO, 1))
-                    {
-                        targetResources.Add(_resourceSO, 1);
-                        _resourceSO = null; 
-                    }
-                }
-                _target = null;                
-            }
+            Debug.Log("targeting");
+            yield return new WaitForSeconds(1f);
+            _targetingInProcess = false;
         }
     }
 
@@ -154,7 +163,6 @@ public class Human : MonoBehaviour
     {
         if (_target != null)
             _navMeshAgent.SetDestination(_target.GetComponent<Building>().EntryPlace.transform.position);
-        //transform.LookAt(_target.position);
     }
 
 
