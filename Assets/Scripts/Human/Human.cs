@@ -78,7 +78,7 @@ public class Human : MonoBehaviour
 
                 if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0)
                     SetTargetToNearest(_productBuildings);
-                else if (_productBuildings.Count > 0 && _extractBuildings.Count > 0)
+                if (_target == null && _productBuildings.Count > 0 && _extractBuildings.Count > 0)
                     SetTargetToNearest(_extractBuildings);
             }
             else
@@ -127,7 +127,6 @@ public class Human : MonoBehaviour
         MoveToTarget();
     }
 
-
     private GameObject FindNearestBuildingOfType(List<GameObject> buildingList, bool takingItem = true)
     {
         GameObject nearestBuilding = null;
@@ -148,9 +147,6 @@ public class Human : MonoBehaviour
         }
         return nearestBuilding;
     }
-    
-
-
     void MoveToTarget()
     {
         if (_target != null)
