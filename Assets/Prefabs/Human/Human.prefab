@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4d1deea61ae12c4bae0386e25378c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _crate: {fileID: 6627876899152129679}
   _target: {fileID: 0}
   _resourceSO: {fileID: 0}
 --- !u!114 &7524413189285177923

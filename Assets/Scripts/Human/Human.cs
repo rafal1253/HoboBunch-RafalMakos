@@ -10,7 +10,7 @@ public class Human : MonoBehaviour
     enum States { Idle, Walk, Carry}
     States _state;
 
-
+    [SerializeField] GameObject _crate;
     [SerializeField] GameObject _target;
     [SerializeField] GameResourceSO _resourceSO;
     bool _targetingInProcess = false;
@@ -74,12 +74,12 @@ public class Human : MonoBehaviour
             _targetingInProcess = true;
             if (_resourceSO == null)
             {
-                _state = States.Walk;
-
                 if (_warehouseBuildings.Count > 0 && _productBuildings.Count > 0)
                     SetTargetToNearest(_productBuildings);
                 if (_target == null && _productBuildings.Count > 0 && _extractBuildings.Count > 0)
                     SetTargetToNearest(_extractBuildings);
+
+                if (_target != null) _state = States.Walk;
             }
             else
             {
@@ -156,6 +156,7 @@ public class Human : MonoBehaviour
     {
         _animator.SetBool("Walk", false);
         _animator.SetBool("Carry", false);
+        _crate.SetActive(_resourceSO != null);
         switch (_state)
         {
             case States.Idle:
