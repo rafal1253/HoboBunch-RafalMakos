@@ -142,7 +142,7 @@ public class Human : MonoBehaviour
             if (distance < shortestDistance)
             {
                 shortestDistance = distance;
-                nearestBuilding = building.gameObject;
+                nearestBuilding = building;
             }
         }
         return nearestBuilding;
@@ -150,7 +150,7 @@ public class Human : MonoBehaviour
     void MoveToTarget()
     {
         if (_target != null)
-            _navMeshAgent.SetDestination(_target.transform.position);
+            _navMeshAgent.SetDestination(_target.GetComponent<Building>().EntryPlace.transform.position);
         //transform.LookAt(_target.position);
     }
 

@@ -29,7 +29,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7394829260366031388}
-  - {fileID: 5990668375558013413}
   m_Father: {fileID: 6995514592916349562}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
@@ -67,6 +66,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6995514592136694507}
+  - {fileID: 5990668375558013413}
   - {fileID: 886668479897145545}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingCanvas: {fileID: 4587874233119197532}
+  EntryPlace: {fileID: 7668251884061284212}
 --- !u!114 &8951309828733733232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5990668375558013413}
   m_Layer: 0
-  m_Name: DeliveryPlace
+  m_Name: EntryPlace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -182,11 +183,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7668251884061284212}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.642, y: 0, z: -1.007}
+  m_LocalPosition: {x: 0.10700023, y: 0, z: -0.6839999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6995514592136694507}
+  m_Father: {fileID: 6995514592916349562}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2945736153349703663
